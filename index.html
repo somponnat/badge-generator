@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Badge Viewer</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; text-align: center; }
+    input[type="file"], button { margin: 10px; }
+    .name-list { margin-top: 20px; text-align: left; max-width: 600px; margin: 0 auto; }
+    .name-item { cursor: pointer; color: blue; text-decoration: underline; margin: 5px 0; }
+
+    .badge {
+      position: relative;
+      display: inline-block;
+      width: 825px;
+      height: 1350px;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      background-color: white;
+    }
+
+    .badge-bg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .text-field {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #000;
+      font-weight: bold;
+      overflow: hidden;
+      text-shadow: 1px 1px 2px white;
+      white-space: pre-line;
+    }
+
+    .name {
+      left: 130px;
+      top: 515px;
+      width: 560px;
+      height: 215px;
+      line-height: 1.1;
+      font-size: 48px;
+    }
+
+    .institution {
+      left: 130px;
+      top: 750px;
+      width: 560px;
+      height: 90px;
+      font-size: 36px;
+    }
+
+    .role {
+      left: 130px;
+      top: 860px;
+      width: 560px;
+      height: 75px;
+      font-size: 36px;
+    }
+
+    .buttons { margin-top: 15px; }
+    button { margin: 5px; padding: 8px 16px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h2>Badge Viewer</h2>
+  <input type="file" id="excelFile" accept=".xlsx,.xls" />
+  <button onclick="processFile()">Process File</button>
+
+  <div class="name-list" id="nameList"></div>
+
+  <div class="badge" id="badge" style="display:none;">
+    <img src="badge-bg.png" alt="Badge Background" class="badge-bg" />
+    <div class="text-field name" id="badgeName"></div>
+    <div class="text-field institution" id="badgeInstitution"></div>
+    <div class="text-field role" id="badgeRole"></div>
+  </div>
+
+  <div class="buttons" id="exportButtons" style="display:none;">
+    <button onclick="exportCurrentBadge()">Export PDF – This Badge</button>
+    <button onclick="exportAllBadges()">Export PDF – All Badges</button>
+    <button onclick="exportPNG()">Export PNG – This Badge</button>
+  </div>
+
+  <script src="xlsx.full.min.js"></script>
+  <script src="html2canvas.min.js"></script>
+  <script src="jspdf.umd.min.js"></script>
+
+  <script>
+    let people = [];
+    let selectedPerson = null;
+    let currentFile = null;
+
+    document.getElementById('excelFile').addEventListener('change', (e) => {
+      currentFile = e.target.files[0];
+    });
+
+    function processFile() {
+      if (!currentFile) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        people = XLSX.utils.sheet_to_json(sheet);
+        displayNameList(people);
+      };
+      reader.readAsArrayBuffer(currentFile);
+    }
+
+    function displayNameList(data) {
+      const listDiv = document.getElementById("nameList");
+      listDiv.innerHTML = "";
+      data.sort((a, b) => a.Name.localeCompare(b.Name));
+      data.forEach((person) => {
+        const item = document.createElement("div");
+        item.className = "name-item";
+        item.textContent = person.Name;
+        item.onclick = () => {
+          showBadge(person);
+          selectedPerson = person;
+        };
+        listDiv.appendChild(item);
+      });
+    }
+
+    function showBadge(person) {
+      document.getElementById("badge").style.display = "inline-block";
+      document.getElementById("exportButtons").style.display = "block";
+
+      const nameParts = person.Name.trim().split(" ");
+      if (nameParts.length >= 2) {
+        const firstName = nameParts.slice(0, -1).join(" ");
+        const lastName = nameParts.slice(-1)[0];
+        document.getElementById("badgeName").textContent = firstName + "\n" + lastName;
+      } else {
+        document.getElementById("badgeName").textContent = person.Name;
+      }
+
+      document.getElementById("badgeInstitution").textContent = person.Institution;
+      document.getElementById("badgeRole").textContent = person.Role;
+
+      fitText("badgeName");
+      fitText("badgeInstitution");
+      fitText("badgeRole");
+    }
+
+    function fitText(id) {
+      const el = document.getElementById(id);
+      let size = 100;
+      el.style.fontSize = size + "px";
+      while ((el.scrollWidth > el.offsetWidth || el.scrollHeight > el.offsetHeight) && size > 10) {
+        size -= 1;
+        el.style.fontSize = size + "px";
+      }
+    }
+
+    async function exportCurrentBadge() {
+      const badgeEl = document.getElementById("badge");
+      const canvas = await html2canvas(badgeEl);
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "px",
+        format: [825, 1350]
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, 825, 1350);
+      const fileName = selectedPerson?.Name?.replace(/[^a-zA-Z0-9]/g, "_") || "badge";
+      pdf.save(fileName + ".pdf");
+    }
+
+    async function exportAllBadges() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "px",
+        format: [825, 1350]
+      });
+
+      for (let i = 0; i < people.length; i++) {
+        showBadge(people[i]);
+        await new Promise(resolve => setTimeout(resolve, 700));
+        const canvas = await html2canvas(document.getElementById("badge"));
+        const imgData = canvas.toDataURL("image/png");
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, 0, 825, 1350);
+      }
+
+      pdf.save("all_badges.pdf");
+    }
+
+    async function exportPNG() {
+      const badgeEl = document.getElementById("badge");
+      const canvas = await html2canvas(badgeEl);
+      const link = document.createElement("a");
+      const fileName = selectedPerson?.Name?.replace(/[^a-zA-Z0-9]/g, "_") || "badge";
+      link.download = fileName + ".png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+  </script>
+</body>
+</html>
