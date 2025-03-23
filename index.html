@@ -13,8 +13,8 @@
     .badge {
       position: relative;
       display: inline-block;
-      width: 825px;
-      height: 1350px;
+      width: 968px;
+      height: 1417px;
       margin-top: 20px;
       border: 1px solid #ccc;
       background-color: white;
@@ -39,27 +39,27 @@
     }
 
     .name {
-      left: 130px;
-      top: 515px;
-      width: 560px;
-      height: 215px;
+      left: 145px;
+      top: 500px;
+      width: 680px;
+      height: 260px;
       line-height: 1.1;
       font-size: 48px;
     }
 
     .institution {
-      left: 130px;
-      top: 750px;
-      width: 560px;
-      height: 90px;
+      left: 145px;
+      top: 775px;
+      width: 680px;
+      height: 100px;
       font-size: 36px;
     }
 
     .role {
-      left: 130px;
-      top: 860px;
-      width: 560px;
-      height: 75px;
+      left: 145px;
+      top: 895px;
+      width: 680px;
+      height: 90px;
       font-size: 36px;
     }
 
@@ -169,9 +169,9 @@
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "px",
-        format: [825, 1350]
+        format: [968, 1417]
       });
-      pdf.addImage(imgData, 'PNG', 0, 0, 825, 1350);
+      pdf.addImage(imgData, 'PNG', 0, 0, 968, 1417);
       const fileName = selectedPerson?.Name?.replace(/[^a-zA-Z0-9]/g, "_") || "badge";
       pdf.save(fileName + ".pdf");
     }
@@ -181,7 +181,7 @@
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "px",
-        format: [825, 1350]
+        format: [968, 1417]
       });
 
       for (let i = 0; i < people.length; i++) {
@@ -190,7 +190,7 @@
         const canvas = await html2canvas(document.getElementById("badge"));
         const imgData = canvas.toDataURL("image/png");
         if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, 0, 825, 1350);
+        pdf.addImage(imgData, 'PNG', 0, 0, 968, 1417);
       }
 
       pdf.save("all_badges.pdf");
