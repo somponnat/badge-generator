@@ -84,14 +84,11 @@
     <button onclick="exportCurrentBadge()">Export PDF – This Badge</button>
     <button onclick="exportAllBadges()">Export PDF – All Badges</button>
     <button onclick="exportPNG()">Export PNG – This Badge</button>
-    <button onclick="exportAllPNGsAsZip()">Export All PNGs – ZIP</button>
   </div>
 
   <script src="xlsx.full.min.js"></script>
   <script src="html2canvas.min.js"></script>
   <script src="jspdf.umd.min.js"></script>
-  <script src="jszip.min.js"></script>
-  <script src="FileSaver.min.js"></script>
 
   <script>
     let people = [];
@@ -221,31 +218,6 @@
       link.download = fileName + ".png";
       link.href = canvas.toDataURL("image/png");
       link.click();
-    }
-  </scrip
-
-  <script>
-    async function exportAllPNGsAsZip() {
-      const zip = new JSZip();
-      const folder = zip.folder("badges");
-
-      for (let i = 0; i < people.length; i++) {
-        showBadge(people[i]);
-        await new Promise(resolve => setTimeout(resolve, 700));
-        const canvas = await html2canvas(document.getElementById("badge"), {
-          width: 968,
-          height: 1417,
-          scale: 1,
-          useCORS: true
-        });
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
-        const name = people[i].Name.replace(/[^a-zA-Z0-9]/g, "_");
-        folder.file(name + ".png", blob);
-      }
-
-      zip.generateAsync({ type: "blob" }).then(function (content) {
-        saveAs(content, "all_badges.zip");
-      });
     }
   </script>
 </body>
