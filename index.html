@@ -52,7 +52,7 @@
   <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; padding: 20px;">
     <div id="nameList" class="name-list"></div>
     <div class="badge" id="badge" style="display:none;">
-      <img src="https://rawcdn.githack.com/somponnat/badge-generator/907f4b99fb008282d8f7b5c5484d1a86dcca834f/assets/badge-bg.png" class="badge-bg" />
+      <img id="badgeBg" src="https://rawcdn.githack.com/somponnat/badge-generator/907f4b99fb008282d8f7b5c5484d1a86dcca834f/assets/badge-bg.png" class="badge-bg" onload="imageLoaded()" />
       <div class="text-field name" id="badgeName"></div>
       <div class="text-field institution" id="badgeInstitution"></div>
       <div class="text-field role" id="badgeRole"></div>
@@ -65,9 +65,90 @@
     <button onclick="exportPNG()">Export PNG – This Badge</button>
   </div>
 
-  <script src="xlsx.full.min.js"></script>
-  <script src="html2canvas.min.js"></script>
-  <script src="jspdf.umd.min.js"></script>
+  <script src="xlsx.full.min.js">
+    let imageReady = false;
+    function imageLoaded() {
+      imageReady = true;
+    }
+
+    function showBadge(person) {
+      if (!imageReady) {
+        alert("Please wait for the background image to load.");
+        return;
+      }
+
+      document.getElementById("badge").style.display = "inline-block";
+      document.getElementById("exportButtons").style.display = "block";
+
+      const nameParts = person.Name.trim().split(" ");
+      const firstName = nameParts.slice(0, -1).join(" ");
+      const lastName = nameParts.slice(-1)[0];
+      document.getElementById("badgeName").textContent = firstName + "\n" + lastName;
+      document.getElementById("badgeInstitution").textContent = person.Institution;
+      document.getElementById("badgeRole").textContent = person.Role;
+
+      fitText("badgeName");
+      fitText("badgeInstitution");
+      fitText("badgeRole");
+    }
+    </script>
+    
+  <script src="html2canvas.min.js">
+    let imageReady = false;
+    function imageLoaded() {
+      imageReady = true;
+    }
+
+    function showBadge(person) {
+      if (!imageReady) {
+        alert("Please wait for the background image to load.");
+        return;
+      }
+
+      document.getElementById("badge").style.display = "inline-block";
+      document.getElementById("exportButtons").style.display = "block";
+
+      const nameParts = person.Name.trim().split(" ");
+      const firstName = nameParts.slice(0, -1).join(" ");
+      const lastName = nameParts.slice(-1)[0];
+      document.getElementById("badgeName").textContent = firstName + "\n" + lastName;
+      document.getElementById("badgeInstitution").textContent = person.Institution;
+      document.getElementById("badgeRole").textContent = person.Role;
+
+      fitText("badgeName");
+      fitText("badgeInstitution");
+      fitText("badgeRole");
+    }
+    </script>
+    
+  <script src="jspdf.umd.min.js">
+    let imageReady = false;
+    function imageLoaded() {
+      imageReady = true;
+    }
+
+    function showBadge(person) {
+      if (!imageReady) {
+        alert("Please wait for the background image to load.");
+        return;
+      }
+
+      document.getElementById("badge").style.display = "inline-block";
+      document.getElementById("exportButtons").style.display = "block";
+
+      const nameParts = person.Name.trim().split(" ");
+      const firstName = nameParts.slice(0, -1).join(" ");
+      const lastName = nameParts.slice(-1)[0];
+      document.getElementById("badgeName").textContent = firstName + "\n" + lastName;
+      document.getElementById("badgeInstitution").textContent = person.Institution;
+      document.getElementById("badgeRole").textContent = person.Role;
+
+      fitText("badgeName");
+      fitText("badgeInstitution");
+      fitText("badgeRole");
+    }
+    </script>
+    
   <script>
     let people = [];
     let selectedPerson = null;
@@ -180,6 +261,33 @@
       link.href = canvas.toDataURL("image/png");
       link.click();
     }
-  </script>
+  
+    let imageReady = false;
+    function imageLoaded() {
+      imageReady = true;
+    }
+
+    function showBadge(person) {
+      if (!imageReady) {
+        alert("Please wait for the background image to load.");
+        return;
+      }
+
+      document.getElementById("badge").style.display = "inline-block";
+      document.getElementById("exportButtons").style.display = "block";
+
+      const nameParts = person.Name.trim().split(" ");
+      const firstName = nameParts.slice(0, -1).join(" ");
+      const lastName = nameParts.slice(-1)[0];
+      document.getElementById("badgeName").textContent = firstName + "\n" + lastName;
+      document.getElementById("badgeInstitution").textContent = person.Institution;
+      document.getElementById("badgeRole").textContent = person.Role;
+
+      fitText("badgeName");
+      fitText("badgeInstitution");
+      fitText("badgeRole");
+    }
+    </script>
+    
 </body>
 </html>
