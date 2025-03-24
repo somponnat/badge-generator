@@ -49,15 +49,14 @@
   <input type="file" id="excelFile" accept=".xlsx,.xls" />
   <button onclick="processFile()">Process File</button>
 
-  <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; padding: 20px;">
+  <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; padding: 20px;"><div id="nameList" class="name-list"></div><div style="flex: 1; display: flex; justify-content: center;">
     <div id="nameList" class="name-list"></div>
-    <div class="badge" id="badge" style="display:none;">
+    <div class="badge" id="badge" style="display:none; position: relative; margin: 0 auto;">
       <img id="badgeBg" src="https://rawcdn.githack.com/somponnat/badge-generator/907f4b99fb008282d8f7b5c5484d1a86dcca834f/assets/badge-bg.png" class="badge-bg" onload="imageLoaded()" />
       <div class="text-field name" id="badgeName"></div>
       <div class="text-field institution" id="badgeInstitution"></div>
       <div class="text-field role" id="badgeRole"></div>
-    </div>
-  </div>
+    </div></div></div>
 
   <div class="buttons" id="exportButtons" style="display:none;">
     <button onclick="exportCurrentBadge()">Export PDF – This Badge</button>
