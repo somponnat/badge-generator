@@ -52,7 +52,7 @@
   <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; padding: 20px;"><div id="nameList" class="name-list"></div><div style="flex: 1; display: flex; justify-content: center;">
     <div id="nameList" class="name-list"></div>
     <div class="badge" id="badge" style="display:none; position: relative; margin: 0 auto;">
-      <img id="badgeBg" src="/badge-bg.png" class="badge-bg" onload="imageLoaded()" />
+      <img id="badgeBg" src="https://rawcdn.githack.com/somponnat/badge-generator/907f4b99fb008282d8f7b5c5484d1a86dcca834f/assets/badge-bg.png" class="badge-bg"  />
       <div class="text-field name" id="badgeName"></div>
       <div class="text-field institution" id="badgeInstitution"></div>
       <div class="text-field role" id="badgeRole"></div>
@@ -90,7 +90,20 @@
       fitText("badgeInstitution");
       fitText("badgeRole");
     }
-    </script>
+    
+    let imageReady = false;
+    window.onload = function () {
+      const bgImg = document.getElementById("badgeBg");
+      if (bgImg.complete) {
+        imageReady = true;
+      } else {
+        bgImg.onload = () => {
+          imageReady = true;
+        };
+      }
+    };
+
+</script>
     
   <script src="html2canvas.min.js">
     let imageReady = false;
@@ -118,7 +131,20 @@
       fitText("badgeInstitution");
       fitText("badgeRole");
     }
-    </script>
+    
+    let imageReady = false;
+    window.onload = function () {
+      const bgImg = document.getElementById("badgeBg");
+      if (bgImg.complete) {
+        imageReady = true;
+      } else {
+        bgImg.onload = () => {
+          imageReady = true;
+        };
+      }
+    };
+
+</script>
     
   <script src="jspdf.umd.min.js">
     let imageReady = false;
@@ -146,7 +172,20 @@
       fitText("badgeInstitution");
       fitText("badgeRole");
     }
-    </script>
+    
+    let imageReady = false;
+    window.onload = function () {
+      const bgImg = document.getElementById("badgeBg");
+      if (bgImg.complete) {
+        imageReady = true;
+      } else {
+        bgImg.onload = () => {
+          imageReady = true;
+        };
+      }
+    };
+
+</script>
     
   <script>
     let people = [];
@@ -286,7 +325,20 @@
       fitText("badgeInstitution");
       fitText("badgeRole");
     }
-    </script>
+    
+    let imageReady = false;
+    window.onload = function () {
+      const bgImg = document.getElementById("badgeBg");
+      if (bgImg.complete) {
+        imageReady = true;
+      } else {
+        bgImg.onload = () => {
+          imageReady = true;
+        };
+      }
+    };
+
+</script>
     
 </body>
 </html>
