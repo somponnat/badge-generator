@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,24 +7,14 @@
   <style>
     body { font-family: sans-serif; margin: 20px; text-align: center; }
     input[type="file"], button { margin: 10px; }
-    .name-list { margin-top: 20px; text-align: left; max-width: 600px; margin: 0 auto; }
-    .name-item { cursor: pointer; color: blue; text-decoration: underline; margin: 5px 0; }
-
     .badge {
       position: relative;
       display: inline-block;
       width: 968px;
       height: 1417px;
       margin-top: 20px;
-      border: 1px solid #ccc;
-      background-color: white;
     }
-
-    .badge-bg {
-      width: 100%;
-      height: 100%;
-    }
-
+    .badge-bg { width: 100%; height: 100%; }
     .text-field {
       position: absolute;
       display: flex;
@@ -36,50 +27,39 @@
       text-shadow: 1px 1px 2px white;
       white-space: pre-line;
     }
-
     .name {
-      left: 145px;
-      top: 500px;
-      width: 680px;
-      height: 260px;
-      line-height: 1.1;
+      left: 145px; top: 500px; width: 680px; height: 260px;
       font-size: 48px;
     }
-
     .institution {
-      left: 145px;
-      top: 775px;
-      width: 680px;
-      height: 100px;
+      left: 145px; top: 775px; width: 680px; height: 100px;
       font-size: 36px;
     }
-
     .role {
-      left: 145px;
-      top: 895px;
-      width: 680px;
-      height: 90px;
+      left: 145px; top: 895px; width: 680px; height: 90px;
       font-size: 36px;
     }
-
-    .buttons { margin-top: 15px; }
-    button { margin: 5px; padding: 8px 16px; font-size: 16px; }
-  </style>
+  
+    .name-list { text-align: center; margin: 20px auto; max-width: 600px; }
+    .name-item {
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+      margin: 5px 0;
+    }
+    </style>
 </head>
 <body>
   <h2>Badge Viewer</h2>
   <input type="file" id="excelFile" accept=".xlsx,.xls" />
   <button onclick="processFile()">Process File</button>
-
-  <div class="name-list" id="nameList"></div>
-
+  <div id="nameList" class="name-list"></div>
   <div class="badge" id="badge" style="display:none;">
-    <img src="badge-bg.png" alt="Badge Background" class="badge-bg" />
+    <img src="badge-bg.png" class="badge-bg" />
     <div class="text-field name" id="badgeName"></div>
     <div class="text-field institution" id="badgeInstitution"></div>
     <div class="text-field role" id="badgeRole"></div>
   </div>
-
   <div class="buttons" id="exportButtons" style="display:none;">
     <button onclick="exportCurrentBadge()">Export PDF – This Badge</button>
     <button onclick="exportAllBadges()">Export PDF – All Badges</button>
@@ -89,7 +69,6 @@
   <script src="xlsx.full.min.js"></script>
   <script src="html2canvas.min.js"></script>
   <script src="jspdf.umd.min.js"></script>
-
   <script>
     let people = [];
     let selectedPerson = null;
@@ -134,13 +113,9 @@
       document.getElementById("exportButtons").style.display = "block";
 
       const nameParts = person.Name.trim().split(" ");
-      if (nameParts.length >= 2) {
-        const firstName = nameParts.slice(0, -1).join(" ");
-        const lastName = nameParts.slice(-1)[0];
-        document.getElementById("badgeName").textContent = firstName + "\n" + lastName;
-      } else {
-        document.getElementById("badgeName").textContent = person.Name;
-      }
+      const firstName = nameParts.slice(0, -1).join(" ");
+      const lastName = nameParts.slice(-1)[0];
+      document.getElementById("badgeName").textContent = firstName + "\n" + lastName;
 
       document.getElementById("badgeInstitution").textContent = person.Institution;
       document.getElementById("badgeRole").textContent = person.Role;
@@ -163,19 +138,16 @@
     async function exportCurrentBadge() {
       const badgeEl = document.getElementById("badge");
       const canvas = await html2canvas(badgeEl, {
-        width: 968,
-        height: 1417,
-        scale: 1,
-        useCORS: true
+        width: 968, height: 1417, scale: 1, useCORS: true
       });
       const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
         orientation: "portrait",
-        unit: "px",
-        format: [968, 1417]
+        unit: "pt",
+        format: [232.44, 340.16]
       });
-      pdf.addImage(imgData, 'PNG', 0, 0, 968, 1417);
+      pdf.addImage(imgData, 'PNG', 0, 0, 232.44, 340.16);
       const fileName = selectedPerson?.Name?.replace(/[^a-zA-Z0-9]/g, "_") || "badge";
       pdf.save(fileName + ".pdf");
     }
@@ -184,34 +156,25 @@
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
         orientation: "portrait",
-        unit: "px",
-        format: [968, 1417]
+        unit: "pt",
+        format: [232.44, 340.16]
       });
-
       for (let i = 0; i < people.length; i++) {
         showBadge(people[i]);
         await new Promise(resolve => setTimeout(resolve, 700));
         const canvas = await html2canvas(document.getElementById("badge"), {
-          width: 968,
-          height: 1417,
-          scale: 1,
-          useCORS: true
+          width: 968, height: 1417, scale: 1, useCORS: true
         });
         const imgData = canvas.toDataURL("image/png");
         if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, 0, 968, 1417);
+        pdf.addImage(imgData, 'PNG', 0, 0, 232.44, 340.16);
       }
-
       pdf.save("all_badges.pdf");
     }
 
     async function exportPNG() {
-      const badgeEl = document.getElementById("badge");
-      const canvas = await html2canvas(badgeEl, {
-        width: 968,
-        height: 1417,
-        scale: 1,
-        useCORS: true
+      const canvas = await html2canvas(document.getElementById("badge"), {
+        width: 968, height: 1417, scale: 1, useCORS: true
       });
       const link = document.createElement("a");
       const fileName = selectedPerson?.Name?.replace(/[^a-zA-Z0-9]/g, "_") || "badge";
