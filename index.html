@@ -52,7 +52,7 @@
   <div style="display: flex; justify-content: center; align-items: flex-start; gap: 40px; padding: 20px;">
     <div id="nameList" class="name-list"></div>
     <div class="badge" id="badge" style="display:none;">
-      <img src="badge-bg.png" class="badge-bg" />
+      <img src="https://rawcdn.githack.com/somponnat/badge-generator/907f4b99fb008282d8f7b5c5484d1a86dcca834f/assets/badge-bg.png" class="badge-bg" />
       <div class="text-field name" id="badgeName"></div>
       <div class="text-field institution" id="badgeInstitution"></div>
       <div class="text-field role" id="badgeRole"></div>
@@ -145,8 +145,8 @@
         unit: "pt",
         format: [232.44, 340.16]
       });
-      pdf.addImage(imgData, 'PNG', 0, 0, 232.44, 340.16);
       const fileName = selectedPerson?.Name?.replace(/[^a-zA-Z0-9]/g, "_") || "badge";
+      pdf.addImage(imgData, 'PNG', 0, 0, 232.44, 340.16);
       pdf.save(fileName + ".pdf");
     }
 
